@@ -56,6 +56,7 @@ export default function App() {
   
   const [activeTab, setActiveTab] = useState<'destaques' | 'feed' | 'locais' | 'perfil'>('destaques');
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [tabDirection, setTabDirection] = useState<'left' | 'right'>('right');
   
   const [featuredPosts, setFeaturedPosts] = useState<Post[]>([]);
   const [feedPosts, setFeedPosts] = useState<Post[]>([]);
@@ -450,7 +451,13 @@ export default function App() {
         <div className="px-6 py-4 relative backdrop-blur-sm bg-black/20 border-b border-purple-500/10">
           <div className="flex items-center justify-between max-w-6xl mx-auto">
             <button
-              onClick={() => setActiveTab('destaques')}
+              onClick={() => {
+                const tabs = ['destaques', 'feed', 'locais', 'perfil'];
+                const currentIndex = tabs.indexOf(activeTab);
+                const newIndex = tabs.indexOf('destaques');
+                setTabDirection(newIndex > currentIndex ? 'right' : 'left');
+                setActiveTab('destaques');
+              }}
               className="relative flex-1 py-2 transition-all group"
             >
               <span 
@@ -469,7 +476,13 @@ export default function App() {
               )}
             </button>
             <button
-              onClick={() => setActiveTab('feed')}
+              onClick={() => {
+                const tabs = ['destaques', 'feed', 'locais', 'perfil'];
+                const currentIndex = tabs.indexOf(activeTab);
+                const newIndex = tabs.indexOf('feed');
+                setTabDirection(newIndex > currentIndex ? 'right' : 'left');
+                setActiveTab('feed');
+              }}
               className="relative flex-1 py-2 transition-all group"
             >
               <span 
@@ -489,7 +502,13 @@ export default function App() {
               )}
             </button>
             <button
-              onClick={() => setActiveTab('locais')}
+              onClick={() => {
+                const tabs = ['destaques', 'feed', 'locais', 'perfil'];
+                const currentIndex = tabs.indexOf(activeTab);
+                const newIndex = tabs.indexOf('locais');
+                setTabDirection(newIndex > currentIndex ? 'right' : 'left');
+                setActiveTab('locais');
+              }}
               className="relative flex-1 py-2 transition-all group"
             >
               <span 
@@ -509,7 +528,13 @@ export default function App() {
               )}
             </button>
             <button
-              onClick={() => setActiveTab('perfil')}
+              onClick={() => {
+                const tabs = ['destaques', 'feed', 'locais', 'perfil'];
+                const currentIndex = tabs.indexOf(activeTab);
+                const newIndex = tabs.indexOf('perfil');
+                setTabDirection(newIndex > currentIndex ? 'right' : 'left');
+                setActiveTab('perfil');
+              }}
               className="relative flex-1 py-2 transition-all group"
             >
               <span 
@@ -532,72 +557,106 @@ export default function App() {
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 max-w-6xl mx-auto pb-24">
-          {activeTab === 'destaques' && (
-            <>
-              <Destaque 
-                posts={featuredPosts}
-                currentUserId={userId!}
-                onPostClick={(post) => setSelectedPost(post)}
-                onLike={handleLike}
-                onUserClick={(uid) => setViewingUserId(uid)}
-              />
-              <BottomNav
-                onMyChatsClick={() => setShowMyChats(true)}
-                onCreateClick={() => setShowCreatePost(true)}
-                onRouletteClick={() => setShowRoulette(true)}
-              />
-            </>
-          )}
-          {activeTab === 'feed' && (
-            <>
-              <Feed 
-                posts={feedPosts}
-                currentUserId={userId!}
-                accessToken={accessToken!}
-                onPostClick={(post) => setSelectedPost(post)}
-                onLike={handleLike}
-                onUserClick={(uid) => setViewingUserId(uid)}
-                onToggleFeature={handleToggleFeature}
-              />
-              <BottomNav
-                onMyChatsClick={() => setShowMyChats(true)}
-                onCreateClick={() => setShowCreatePost(true)}
-                onRouletteClick={() => setShowRoulette(true)}
-              />
-            </>
-          )}
-          {activeTab === 'locais' && (
-            <Locais 
-              onChatClick={(chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData) => {
-                // Add to visited chats if not already there
-                setVisitedChats(prev => {
-                  const exists = prev.some(chat => chat.chatId === chatId);
-                  if (!exists) {
-                    return [...prev, { chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData }];
-                  }
-                  return prev;
-                });
-                
-                setSelectedChat({ chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData });
-                setShowChatScreen(true);
-              }}
-              onMyChatsClick={() => setShowMyChats(true)}
-              onRouletteClick={() => setShowRoulette(true)}
-              accessToken={accessToken!}
-              currentUserId={userId!}
-              currentUsername={userProfile?.username || ''}
-            />
-          )}
-          {activeTab === 'perfil' && (
-            <MyProfileScreen
-              accessToken={accessToken!}
-              onBack={() => setActiveTab('feed')}
-              onPostClick={(post) => setSelectedPost(post)}
-              onAvatarClick={() => setShowAvatarUpload(true)}
-              onProfileUpdate={() => loadUserProfile()}
-            />
-          )}
+        <div className="px-6 py-6 max-w-6xl mx-auto pb-24 relative overflow-hidden">
+          <AnimatePresence mode="wait" initial={false}>
+            {activeTab === 'destaques' && (
+              <motion.div
+                key="destaques"
+                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className="w-full"
+              >
+                <Destaque 
+                  posts={featuredPosts}
+                  currentUserId={userId!}
+                  onPostClick={(post) => setSelectedPost(post)}
+                  onLike={handleLike}
+                  onUserClick={(uid) => setViewingUserId(uid)}
+                />
+                <BottomNav
+                  onMyChatsClick={() => setShowMyChats(true)}
+                  onCreateClick={() => setShowCreatePost(true)}
+                  onRouletteClick={() => setShowRoulette(true)}
+                />
+              </motion.div>
+            )}
+            {activeTab === 'feed' && (
+              <motion.div
+                key="feed"
+                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className="w-full"
+              >
+                <Feed 
+                  posts={feedPosts}
+                  currentUserId={userId!}
+                  accessToken={accessToken!}
+                  onPostClick={(post) => setSelectedPost(post)}
+                  onLike={handleLike}
+                  onUserClick={(uid) => setViewingUserId(uid)}
+                  onToggleFeature={handleToggleFeature}
+                />
+                <BottomNav
+                  onMyChatsClick={() => setShowMyChats(true)}
+                  onCreateClick={() => setShowCreatePost(true)}
+                  onRouletteClick={() => setShowRoulette(true)}
+                />
+              </motion.div>
+            )}
+            {activeTab === 'locais' && (
+              <motion.div
+                key="locais"
+                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className="w-full"
+              >
+                <Locais 
+                  onChatClick={(chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData) => {
+                    // Add to visited chats if not already there
+                    setVisitedChats(prev => {
+                      const exists = prev.some(chat => chat.chatId === chatId);
+                      if (!exists) {
+                        return [...prev, { chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData }];
+                      }
+                      return prev;
+                    });
+                    
+                    setSelectedChat({ chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData });
+                    setShowChatScreen(true);
+                  }}
+                  onMyChatsClick={() => setShowMyChats(true)}
+                  onRouletteClick={() => setShowRoulette(true)}
+                  accessToken={accessToken!}
+                  currentUserId={userId!}
+                  currentUsername={userProfile?.username || ''}
+                />
+              </motion.div>
+            )}
+            {activeTab === 'perfil' && (
+              <motion.div
+                key="perfil"
+                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                className="w-full"
+              >
+                <MyProfileScreen
+                  accessToken={accessToken!}
+                  onBack={() => setActiveTab('feed')}
+                  onPostClick={(post) => setSelectedPost(post)}
+                  onAvatarClick={() => setShowAvatarUpload(true)}
+                  onProfileUpdate={() => loadUserProfile()}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
