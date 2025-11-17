@@ -1443,4 +1443,44 @@ app.post("/make-server-531a6b8c/contract-disease", async (c) => {
   }
 });
 
+// Get player stats
+app.get("/make-server-531a6b8c/player-stats", async (c) => {
+  try {
+    const accessToken = c.req.header('Authorization')?.split(' ')[1];
+    if (!accessToken) {
+      return c.json({ error: 'No authorization token' }, 401);
+    }
+
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(accessToken);
+    
+    if (!user || authError) {
+      return c.json({ error: 'Unauthorized' }, 401);
+    }
+
+    // Get player stats from KV store
+    const statsKey = `player:${user.id}:stats`;
+    const stats = await kv.get(statsKey);
+
+    if (!stats) {
+      // Return default stats if none exist
+      const defaultStats = {
+        health: 100,
+        hunger: 100,
+        thirst: 100,
+        alcoholism: 0
+      };
+      
+      // Save default stats
+      await kv.set(statsKey, defaultStats);
+      
+      return c.json({ stats: defaultStats });
+    }
+
+    return c.json({ stats });
+  } catch (error) {
+    console.error('Error getting player stats:', error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+});
+
 Deno.serve(app.fetch);

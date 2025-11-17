@@ -557,16 +557,15 @@ export default function App() {
         </div>
 
         {/* Content */}
-        <div className="px-6 py-6 max-w-6xl mx-auto pb-24 relative overflow-hidden">
-          <AnimatePresence mode="wait" initial={false}>
+        <div className="px-6 py-6 max-w-6xl mx-auto pb-24">
+          <AnimatePresence mode="wait">
             {activeTab === 'destaques' && (
               <motion.div
                 key="destaques"
-                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                initial={{ x: tabDirection === 'right' ? 300 : -300, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="w-full"
+                exit={{ x: tabDirection === 'right' ? -300 : 300, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
                 <Destaque 
                   posts={featuredPosts}
@@ -585,11 +584,10 @@ export default function App() {
             {activeTab === 'feed' && (
               <motion.div
                 key="feed"
-                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                initial={{ x: tabDirection === 'right' ? 300 : -300, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="w-full"
+                exit={{ x: tabDirection === 'right' ? -300 : 300, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
                 <Feed 
                   posts={feedPosts}
@@ -610,11 +608,10 @@ export default function App() {
             {activeTab === 'locais' && (
               <motion.div
                 key="locais"
-                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                initial={{ x: tabDirection === 'right' ? 300 : -300, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="w-full"
+                exit={{ x: tabDirection === 'right' ? -300 : 300, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
                 <Locais 
                   onChatClick={(chatId, chatName, chatImage, chatBackground, chatDescription, createdBy, menuData) => {
@@ -641,11 +638,10 @@ export default function App() {
             {activeTab === 'perfil' && (
               <motion.div
                 key="perfil"
-                initial={{ x: tabDirection === 'right' ? '100%' : '-100%', opacity: 0 }}
+                initial={{ x: tabDirection === 'right' ? 300 : -300, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                exit={{ x: tabDirection === 'right' ? '-100%' : '100%', opacity: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                className="w-full"
+                exit={{ x: tabDirection === 'right' ? -300 : 300, opacity: 0 }}
+                transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
                 <MyProfileScreen
                   accessToken={accessToken!}
